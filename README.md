@@ -1,0 +1,1 @@
+source ~/.virtualenvs/django-tutorial/bin/activate
