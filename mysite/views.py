@@ -1,4 +1,5 @@
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, HttpResponseForbidden
 import json
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -34,5 +35,11 @@ def logging(request):
         login(request, user)
         return HttpResponse('zalogowano')
     else:
-        return HttpResponse('Zle wprowadzone dane!')
+        return HttpResponseForbidden('Zle wprowadzone dane!')
 
+
+@login_required
+def my_profile(request):
+    user = request.user
+    response = {"username": user.username}
+    return JsonResponse(response)
