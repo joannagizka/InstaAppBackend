@@ -3,6 +3,10 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, Http
 import json
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.shortcuts import render
+from datetime import datetime
+
+from mysite.models import Photo
 
 
 def hello(request):
@@ -43,3 +47,16 @@ def my_profile(request):
     user = request.user
     response = {"username": user.username}
     return JsonResponse(response)
+
+
+@login_required
+def add_photo(request):
+    parsed = json.loads(request.body)
+
+    photoData = parsed['photoA']
+    description = photoData['description']
+
+    photo = Photo(author=request.user, description=description,
+                  created=datetime.now())
+    photo.save()
+    return JsonResponse({'photoId': photo.id})

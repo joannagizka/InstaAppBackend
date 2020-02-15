@@ -1,2 +1,2 @@
-source ~/.virtualenvs/django-tutorial/bin/activate
+source ~/.virtualenvs/insta-app/bin/activate
 python manage.py runserver
