@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render
 from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 from mysite.models import Photo
 
@@ -51,12 +54,16 @@ def my_profile(request):
 
 @login_required
 def add_photo(request):
-    parsed = json.loads(request.body)
-
-    photoData = parsed['photoA']
-    description = photoData['description']
+    up_file = request.FILES['file']
+    description = request.POST['description']
 
     photo = Photo(author=request.user, description=description,
                   created=datetime.now())
     photo.save()
+
+    destination = open('/home/joanna/projekt2020/photos/photo-' + str(photo.id) + "." + up_file.name.split(".")[1], 'wb+')
+    for chunk in up_file.chunks():
+        destination.write(chunk)
+    destination.close()
+
     return JsonResponse({'photoId': photo.id})
