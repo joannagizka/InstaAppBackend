@@ -1,9 +1,12 @@
+from audioop import reverse
+
+from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, HttpResponseForbidden, HttpResponseRedirect
 import json
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
 from datetime import datetime
 import logging
 
@@ -67,3 +70,8 @@ def add_photo(request):
     destination.close()
 
     return JsonResponse({'photoId': photo.id})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/login')
