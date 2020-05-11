@@ -11,4 +11,10 @@ urlpatterns = [
     path('addPhoto/', views.add_photo),
     path('logout/', views.logout_view),
     path('photo/<int:photo_id>/', views.get_photo),
+    path('photoMeta/<int:photo_id>/', views.get_photo_meta),
+    path('allPhotos/', views.all_photos),
+    path('users/', views.get_users),
+    path('follow/<int:other_user_id>/', views.follow),
+    path('unfollow/<int:other_user_id>/', views.unfollow),
+    path('photoMeta/<int:photo_id>/comments/', views.add_comment),
 ]

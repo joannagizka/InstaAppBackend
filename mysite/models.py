@@ -8,3 +8,19 @@ class Photo(models.Model):
     description = models.TextField()
     created = models.DateTimeField()
 
+
+class Observation(models.Model):
+    follower = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='follower')
+    following = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='following')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['follower', 'following'], name='unique_observation')
+        ]
+
+
+class Comment(models.Model):
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE)
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    content = models.TextField()
+    created = models.DateTimeField()
