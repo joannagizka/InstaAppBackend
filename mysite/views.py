@@ -61,6 +61,26 @@ def my_profile(request):
     response = {"username": user.username, 'photos': list(user_photos_parsed)}
     return JsonResponse(response)
 
+@login_required
+def profile(request, other_user_id):
+    other_user = get_object_or_404(User, pk=other_user_id)
+    user_photos = Photo.objects.filter(author=other_user)
+    user_photos_parsed = []
+    for photo in user_photos:
+        user_photos_parsed.append({
+            'id': photo.id,
+            'description': photo.description
+        })
+
+    observations = Observation.objects.filter(follower=request.user).all()
+    observed_users = set()
+    for observation in observations:
+        observed_users.add(observation.following)
+
+    response = {"username": other_user.username,
+                'photos': list(user_photos_parsed),
+                'isObserved': other_user in observed_users}
+    return JsonResponse(response)
 
 @login_required
 def add_photo(request):
@@ -163,13 +183,13 @@ def follow(request, other_user_id):
         observation.save()
     except IntegrityError:
         pass
-    return HttpResponse()
+    return get_users(request)
 
 @login_required
 def unfollow(request, other_user_id):
     other_user = get_object_or_404(User, pk=other_user_id)
     Observation.objects.filter(follower=request.user, following=other_user).delete()
-    return HttpResponse()
+    return get_users(request)
 
 
 @login_required
